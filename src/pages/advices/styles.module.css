@@ -1,0 +1,19 @@
+.text > p {
+    font-size: 22px;
+    line-height: 27px;
+}
+
+.margin {
+    margin-top: 30px;
+}
+
+.finishBtn {
+    width: 180px;
+    padding: 17px 29px;
+    background-color: #208298;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 42px;
+    margin-top: 54px;
+    cursor: pointer;
+}

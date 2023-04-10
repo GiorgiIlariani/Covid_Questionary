@@ -1,0 +1,11 @@
+.warning {
+    width: 350px;
+    margin-top: 120px;
+}
+
+.warning span {
+    color: #626262;
+    font-size: 18px;
+}
+
+

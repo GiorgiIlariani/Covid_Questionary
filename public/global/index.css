@@ -1,0 +1,50 @@
+@font-face {
+    font-family: 'BPG Arial';
+    src: url(../assets/font/bpg_arial_2009_[FONTS.GE]/bpg_arial_2009.ttf) format('opentype');
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;   
+    font-family: 'BPG Arial';
+}
+
+a {
+    text-decoration: none;
+    color: #000000;
+}
+
+.main-section {
+    background-color: #EAEAEA;
+    width: 100%;
+    height: auto;
+    padding: 90px 196px 104px 200px;
+}
+
+.content {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    margin-top: 50px;
+}
+
+
+.content .left-side {
+    width: 600px;
+}
+
+
+.error-text {
+    color: crimson;
+}
+
+
+label {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.input-error {
+    border: 1px solid crimson;
+}
