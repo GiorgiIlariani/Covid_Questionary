@@ -10,9 +10,9 @@ export const CovidConditionInitialValues = {
   had_covid: "",
   had_antibody_test: "",
   antibodies: {
-    // date: "",
+    covid_sickness_date: "",
     test_date: "",
-    number: 0,
+    number: "",
   },
 };
 

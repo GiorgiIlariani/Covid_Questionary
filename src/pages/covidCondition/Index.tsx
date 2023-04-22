@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 // header
 import Header from "../../components/header/Index";
 
@@ -44,7 +44,10 @@ const CovidCondition = () => {
         "covidConditionValues",
         JSON.stringify(values.had_covid)
       );
-    } else if (values.had_covid === "yes") {
+    } else if (
+      values.had_covid === "yes" &&
+      values.had_antibody_test === "true"
+    ) {
       const modifiedValues = {
         ...values,
         had_antibody_test: Boolean(values.had_antibody_test),
@@ -59,6 +62,19 @@ const CovidCondition = () => {
       );
     }
 
+    if (values.had_antibody_test === "false") {
+      console.log("antibody is false");
+      const modifiedValues = {
+        ...values,
+        antibodies: {
+          covid_sickness_date: values.antibodies.covid_sickness_date,
+        },
+      };
+      sessionStorage.setItem(
+        "covidConditionValues",
+        JSON.stringify(modifiedValues)
+      );
+    }
     navigate("/vaccine", { replace: true });
   };
 
@@ -101,7 +117,7 @@ const CovidCondition = () => {
                       values.had_covid === "yes" ? (
                         <FormControl
                           control="datePicker"
-                          name="antibodies.date"
+                          name="antibodies.covid_sickness_date"
                           label="მიუთითე მიახლოებითი პერიოდი (დღე/თვე/წელი) როდის გქონდა Covid-19*"
                         />
                       ) : values.had_antibody_test === "true" &&

@@ -32,28 +32,31 @@ export const CovidConditionValidationSchema = Yup.object({
     otherwise: (value) => value.required(),
   }),
   antibodies: Yup.object().shape({
-    date: Yup.string().test("date", function (value) {
-      let hadTest;
-      let hadCovid;
-      this.from?.map((item) => {
-        hadTest = item.value.had_antibody_test;
-        hadCovid = item.value.had_covid;
-      });
+    covid_sickness_date: Yup.string().test(
+      "covid_sickness_date",
+      function (value) {
+        let hadTest;
+        let hadCovid;
+        this.from?.map((item) => {
+          hadTest = item.value.had_antibody_test;
+          hadCovid = item.value.had_covid;
+        });
 
-      if (hadCovid === "no" || hadCovid === "I have now") {
-        return true;
+        if (hadCovid === "no" || hadCovid === "I have now") {
+          return true;
+        }
+
+        if (hadTest === "true") {
+          return true;
+        }
+
+        if (value !== undefined) {
+          return true;
+        }
+
+        return false;
       }
-
-      if (hadTest === "true") {
-        return true;
-      }
-
-      if (value !== undefined) {
-        return true;
-      }
-
-      return false;
-    }),
+    ),
     test_date: Yup.string().notRequired(),
     number: Yup.number().notRequired(),
   }),
