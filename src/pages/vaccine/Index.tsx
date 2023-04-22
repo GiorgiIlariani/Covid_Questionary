@@ -17,28 +17,28 @@ import { radioArrProps } from "../../interface/Index";
 import styles from "./styles.module.css";
 
 //router link
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 //buttons
 import PrevBtn from "../../components/UI/PrevBtn";
 import NextBtn from "../../components/UI/NextBtn";
 
 const hadVaccine: radioArrProps[] = [
-  { id: 1, value: true, label: "კი" },
-  { id: 2, value: false, label: "არა" },
+  { id: 1, value: "true", label: "კი" },
+  { id: 2, value: "false", label: "არა" },
 ];
 
 const chooseTheStage: radioArrProps[] = [
   {
     id: 1,
-    value: "პირველი დოზა და დარეგისტრირებული ვარ მეორეზე",
+    value: "first_dosage_and_registered_on_the_second",
     label: "პირველი დოზა და დარეგისტრირებული ვარ მეორეზე",
   },
 
-  { id: 2, value: "სრულად აცრილი ვარ", label: "სრულად აცრილი ვარ" },
+  { id: 2, value: "fully_vaccinated", label: "სრულად აცრილი ვარ" },
   {
     id: 3,
-    value: "პირველი დოზა და არ დავრეგისტრირებულვარ მეორეზე",
+    value: "first_dosage_and_not_registered_on_the_second",
     label: "პირველი დოზა და არ დავრეგისტრირებულვარ მეორეზე",
   },
 ];
@@ -46,21 +46,37 @@ const chooseTheStage: radioArrProps[] = [
 const whatAreYouWaitingFor: radioArrProps[] = [
   {
     id: 1,
-    value: "დარეგისტრირებული ვარ და ველოდები რიცხვს",
+    value: "already registered and waiting for date",
     label: "დარეგისტრირებული ვარ და ველოდები რიცხვს",
   },
 
-  { id: 2, value: "არ ვგეგმავ", label: "არ ვგეგმავ" },
+  { id: 2, value: "do not plan to", label: "არ ვგეგმავ" },
   {
     id: 3,
-    value: "გადატანილი მაქვს და ვგეგმავ აცრას",
+    value: "have been transferred and plan to get vaccinated",
     label: "გადატანილი მაქვს და ვგეგმავ აცრას",
   },
 ];
 
 const Vaccine = () => {
-  const submitHandler = () => {
-    console.log("submited");
+  const navigate = useNavigate();
+
+  const onSubmit = (values: any) => {
+    if (values.had_vaccine === "true") {
+      const modifiedValues = {
+        had_vaccine: Boolean(values.had_vaccine),
+        vaccination_stage: values.vaccination_stage,
+      };
+      sessionStorage.setItem("vaccineValues", JSON.stringify(modifiedValues));
+    } else if (values.had_vaccine === "false") {
+      const modifiedValues = {
+        had_vaccine: Boolean(values.had_vaccine),
+        what_are_you_waiting_for: values.what_are_you_waiting_for,
+      };
+      sessionStorage.setItem("vaccineValues", JSON.stringify(modifiedValues));
+    }
+
+    navigate("/advices", { replace: true });
   };
   return (
     <section className="main-section">
@@ -70,8 +86,9 @@ const Vaccine = () => {
           <Formik
             initialValues={VaccineInitialValues}
             validationSchema={VaccineValidationSchema}
-            onSubmit={submitHandler}>
-            {({ setFieldValue, values }) => {
+            onSubmit={onSubmit}>
+            {({ values }) => {
+              console.log(values);
               return (
                 <Form autoComplete="off">
                   <Grid container spacing={4}>
@@ -81,8 +98,6 @@ const Vaccine = () => {
                         name="had_vaccine"
                         array={hadVaccine}
                         label="უკვე აცრილი ხარ?*"
-                        setFieldValue={setFieldValue}
-                        value={values.had_vaccine}
                       />
                     </Grid>
                     <Grid item xs={12}>
@@ -92,8 +107,6 @@ const Vaccine = () => {
                           name="vaccination_stage"
                           label="აირჩიე რა ეტაპზე ხარ*"
                           array={chooseTheStage}
-                          setFieldValue={setFieldValue}
-                          value={values.vaccination_stage}
                         />
                       )}
                       {values.had_vaccine === "false" && (
@@ -102,14 +115,12 @@ const Vaccine = () => {
                           name="what_are_you_waiting_for"
                           label="რას ელოდები"
                           array={whatAreYouWaitingFor}
-                          setFieldValue={setFieldValue}
-                          value={values.what_are_you_waiting_for}
                         />
                       )}
                     </Grid>
                     <Grid item xs={12} mt={4} ml={4}>
                       {values.vaccination_stage ===
-                        "პირველი დოზა და არ დავრეგისტრირებულვარ მეორეზე" &&
+                        "first_dosage_and_not_registered_on_the_second" &&
                         values.had_vaccine === "true" && (
                           <div>
                             <p style={{ fontSize: "20px" }}>
@@ -128,7 +139,7 @@ const Vaccine = () => {
                     <Grid item xs={12} ml={4}>
                       {values.had_vaccine === "false" &&
                         values.what_are_you_waiting_for ===
-                          "გადატანილი მაქვს და ვგეგმავ აცრას" && (
+                          "have been transferred and plan to get vaccinated" && (
                           <div style={{ fontSize: "20px" }}>
                             <p
                               style={{
@@ -150,10 +161,17 @@ const Vaccine = () => {
                         )}
                     </Grid>
                   </Grid>
-                  <Link to="/covid-condition">
-                    <PrevBtn />
-                  </Link>
-                  <NextBtn />
+                  <Grid
+                    item
+                    xs={9}
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="space-between">
+                    <Link to="/covid-condition">
+                      <PrevBtn />
+                    </Link>
+                    <NextBtn />
+                  </Grid>
                 </Form>
               );
             }}

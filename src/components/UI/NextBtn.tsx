@@ -1,13 +1,12 @@
 import React from "react";
 
 // import styles
-import styles from "./NextBtn.module.css";
-import { NextBtnProps } from "../../interface/Index";
+import styles from "./Btn.module.css";
 
 const NextBtn = () => {
   return (
-    <button className={styles.btn} type="submit">
-      <img src="./assets/images/goForward.png" alt="go forward" />
+    <button type="submit" className={styles.finishBtn}>
+      შემდეგი
     </button>
   );
 };

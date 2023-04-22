@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 //react router
 import { Link } from "react-router-dom";
@@ -7,6 +7,9 @@ import { Link } from "react-router-dom";
 import styles from "./styles.module.css";
 
 const HomePage = () => {
+  useEffect(() => {
+    sessionStorage.clear();
+  }, []);
   return (
     <section className={styles["section-center"]}>
       <img src="./assets/images/redberry-logo.png" alt="redberry-logo" />

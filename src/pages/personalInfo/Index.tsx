@@ -12,16 +12,20 @@ import { PersonInitialValues } from "../../components/FormikHelpers/InitialValue
 import { PersonalValidationSchema } from "../../components/FormikHelpers/ValidationSchema";
 import FormControl from "../../components/FormikHelpers/FormControl";
 
-// interface
+// mui
 import { Grid } from "@mui/material";
 
 // react router
 import { useNavigate } from "react-router-dom";
+
+// nextbtn
 import NextBtn from "../../components/UI/NextBtn";
 
-const PersonalInfo: React.FC = () => {
+const PersonalInfo = () => {
   const navigate = useNavigate();
-  const onSubmit = () => {
+
+  const onSubmit = (values: any) => {
+    sessionStorage.setItem("personalInfoValues", JSON.stringify(values));
     navigate("/covid-condition", { replace: true });
   };
 
@@ -34,7 +38,7 @@ const PersonalInfo: React.FC = () => {
             initialValues={PersonInitialValues}
             onSubmit={onSubmit}
             validationSchema={PersonalValidationSchema}>
-            {() => {
+            {({ values }) => {
               return (
                 <Form autoComplete="off">
                   <Grid container spacing={4}>
@@ -63,7 +67,9 @@ const PersonalInfo: React.FC = () => {
                       />
                     </Grid>
                   </Grid>
-                  <NextBtn />
+                  <Grid item xs={12} display="flex" justifyContent="flex-end">
+                    <NextBtn />
+                  </Grid>
                 </Form>
               );
             }}

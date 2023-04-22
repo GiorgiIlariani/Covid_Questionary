@@ -1,14 +1,23 @@
-import React from "react";
+import React, { useEffect, ChangeEvent } from "react";
 import { FormikControlProps } from "../../interface/Index";
 import { useField } from "formik";
 
-const DatePickerComponent = ({
-  name,
-  label,
-  value,
-  setFieldValue,
-}: FormikControlProps) => {
-  const [field, meta] = useField(name);
+const DatePickerComponent = ({ name, label }: FormikControlProps) => {
+  const [field, meta, helpers] = useField(name);
+
+  useEffect(() => {
+    const savedValue = sessionStorage.getItem(name);
+
+    if (savedValue) {
+      helpers.setValue(savedValue);
+    }
+  }, []);
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    helpers.setValue(value);
+    sessionStorage.setItem(name, value);
+  };
 
   let hasError = meta.touched && meta.error !== undefined;
   return (
@@ -19,10 +28,8 @@ const DatePickerComponent = ({
         type="date"
         name={name}
         id={name}
-        value={value}
-        onChange={(e) => {
-          setFieldValue!(name, e.target.value);
-        }}
+        value={field.value}
+        onChange={handleChange}
         style={{
           width: "100%",
           padding: "16px 20px",

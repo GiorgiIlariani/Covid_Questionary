@@ -14,7 +14,7 @@ export interface FormikControlProps {
     label: string;
     id: number;
   }[];
-  value?: string | boolean;
+  // value?: string | boolean;
   setFieldValue?: (field: string, value: any) => void;
 }
 // had covid?

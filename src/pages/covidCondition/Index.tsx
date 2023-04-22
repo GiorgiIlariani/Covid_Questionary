@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 // header
 import Header from "../../components/header/Index";
 
@@ -10,28 +10,55 @@ import { CovidConditionInitialValues } from "../../components/FormikHelpers/Init
 
 // interface
 import { radioArrProps, CovidConditionValueProps } from "../../interface/Index";
-import { CovidConditionValidationSchema } from "../../components/FormikHelpers/ValidationSchema";
 
+// formik helpers
+import { CovidConditionValidationSchema } from "../../components/FormikHelpers/ValidationSchema";
 import FormControl from "../../components/FormikHelpers/FormControl";
+
+// mui
 import { Grid } from "@mui/material";
+
+// buttons
 import NextBtn from "../../components/UI/NextBtn";
 import PrevBtn from "../../components/UI/PrevBtn";
+
+// router dom
 import { Link, useNavigate } from "react-router-dom";
 
 const hadCovid: radioArrProps[] = [
-  { id: 1, value: "კი", label: "კი" },
-  { id: 2, value: "არა", label: "არა" },
-  { id: 3, value: "ახლა მაქვს", label: "ახლა მაქვს" },
+  { id: 1, value: "yes", label: "კი" },
+  { id: 2, value: "no", label: "არა" },
+  { id: 3, value: "I have now", label: "ახლა მაქვს" },
 ];
 
 const hadAntibodyTest: radioArrProps[] = [
-  { id: 1, value: true, label: "კი" },
-  { id: 2, value: false, label: "არა" },
+  { id: 1, value: "true", label: "კი" },
+  { id: 2, value: "false", label: "არა" },
 ];
 
 const CovidCondition = () => {
   const navigate = useNavigate();
-  const onSubmit = (values: CovidConditionValueProps, helpers: any) => {
+  const onSubmit = (values: any) => {
+    if (values.had_covid == "no" && values.had_covid === "I have now") {
+      sessionStorage.setItem(
+        "covidConditionValues",
+        JSON.stringify(values.had_covid)
+      );
+    } else if (values.had_covid === "yes") {
+      const modifiedValues = {
+        ...values,
+        had_antibody_test: Boolean(values.had_antibody_test),
+        antibodies: {
+          test_date: values.antibodies.test_date,
+          number: Number(values.antibodies.number),
+        },
+      };
+      sessionStorage.setItem(
+        "covidConditionValues",
+        JSON.stringify(modifiedValues)
+      );
+    }
+
     navigate("/vaccine", { replace: true });
   };
 
@@ -43,10 +70,11 @@ const CovidCondition = () => {
           <Formik
             onSubmit={onSubmit}
             initialValues={CovidConditionInitialValues}
-            validationSchema={CovidConditionValidationSchema}>
-            {({ values, setFieldValue }) => {
+            validationSchema={CovidConditionValidationSchema}
+            validateOnBlur={true}
+            validateOnChange={true}>
+            {({ values }) => {
               console.log(values);
-
               return (
                 <Form autoComplete="off">
                   <Grid container spacing={4}>
@@ -56,57 +84,56 @@ const CovidCondition = () => {
                         name="had_covid"
                         label="გაქვს გადატანილი covid-19?*"
                         array={hadCovid}
-                        value={values.had_covid}
-                        setFieldValue={setFieldValue}
                       />
                     </Grid>
                     <Grid item xs={12}>
-                      {values.had_covid === "კი" && (
+                      {values.had_covid === "yes" && (
                         <FormControl
                           control="radio"
                           name="had_antibody_test"
                           label="ანტისხეულების ტესტი გაქვს გაკეთებული?*"
                           array={hadAntibodyTest}
-                          value={values.had_antibody_test}
-                          setFieldValue={setFieldValue}
                         />
                       )}
                     </Grid>
-                    <Grid item xs={11}>
+                    <Grid item xs={12}>
                       {values.had_antibody_test === "false" &&
-                      values.had_covid === "კი" ? (
+                      values.had_covid === "yes" ? (
                         <FormControl
                           control="datePicker"
-                          name="antibodies.test_date"
-                          value={values.antibodies.test_date}
+                          name="antibodies.date"
                           label="მიუთითე მიახლოებითი პერიოდი (დღე/თვე/წელი) როდის გქონდა Covid-19*"
-                          setFieldValue={setFieldValue}
                         />
                       ) : values.had_antibody_test === "true" &&
-                        values.had_covid === "კი" ? (
+                        values.had_covid === "yes" ? (
                         <React.Fragment>
                           <FormControl
                             control="datePicker"
                             name="antibodies.test_date"
-                            value={values.antibodies.test_date}
                             label="თუ გახსოვს, გთხოვ მიუთითე ტესტის მიახლოებითი რიცხვი და ანტისხეულების რაოდენობა*"
-                            setFieldValue={setFieldValue}
                           />
                           <FormControl
                             control="input"
                             name="antibodies.number"
-                            value={values.antibodies.number}
-                            setFieldValue={setFieldValue}
                             placeholder="ანტისხეულების რაოდენობა"
                           />
                         </React.Fragment>
                       ) : null}
                     </Grid>
                   </Grid>
-                  <Link to="/personal-info">
-                    <PrevBtn />
-                  </Link>
-                  <NextBtn />
+
+                  <Grid
+                    item
+                    xs={12}
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="space-between"
+                    mt={4}>
+                    <Link to="/personal-info">
+                      <PrevBtn />
+                    </Link>
+                    <NextBtn />
+                  </Grid>
                 </Form>
               );
             }}

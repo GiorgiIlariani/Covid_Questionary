@@ -8,12 +8,13 @@ import FormControl from "../../components/FormikHelpers/FormControl";
 import { radioArrProps } from "../../interface/Index";
 import { Link, useNavigate } from "react-router-dom";
 import PrevBtn from "../../components/UI/PrevBtn";
+import NextBtn from "../../components/UI/NextBtn";
 
 const nonFormalMeetings: radioArrProps[] = [
-  { id: 1, value: "კვირაში ორჯერ", label: "კვირაში ორჯერ" },
-  { id: 2, value: "კვირაში ერთხელ", label: "კვირაში ერთხელ" },
-  { id: 3, value: "ორ კვირაში ერთხელ", label: "ორ კვირაში ერთხელ" },
-  { id: 4, value: "თვეში ერთხელ", label: "თვეში ერთხელ" },
+  { id: 1, value: "twice_a_week", label: "კვირაში ორჯერ" },
+  { id: 2, value: "once_a_week", label: "კვირაში ერთხელ" },
+  { id: 3, value: "once_every_two_weeks", label: "ორ კვირაში ერთხელ" },
+  { id: 4, value: "once_a_month", label: "თვეში ერთხელ" },
 ];
 
 const numberOfDaysFromOffice: radioArrProps[] = [
@@ -27,7 +28,12 @@ const numberOfDaysFromOffice: radioArrProps[] = [
 
 const Advices = () => {
   const navigate = useNavigate();
-  const onSubmit = () => {
+  const onSubmit = (values: any) => {
+    const modifiedValues = {
+      ...values,
+      number_of_days_from_office: Number(values.number_of_days_from_office),
+    };
+    sessionStorage.setItem("advicesValues", JSON.stringify(modifiedValues));
     navigate("/thanks", { replace: true });
   };
 
@@ -40,8 +46,9 @@ const Advices = () => {
             initialValues={AdvicesInitialValues}
             onSubmit={onSubmit}
             validationSchema={AdvicesValidationSchema}>
-            {({ setFieldValue, values }) => {
+            {({ values }) => {
               console.log(values);
+
               return (
                 <Form autoComplete="off">
                   <Grid container spacing={5}>
@@ -64,7 +71,6 @@ const Advices = () => {
                         label="რა სიხშირით შეიძლება გვქონდეს საერთო არაფორმალური ონლაინ შეხვედრები, სადაც ყველა სურვილისამებრ ჩაერთვება?*"
                         name="non_formal_meetings"
                         array={nonFormalMeetings}
-                        setFieldValue={setFieldValue}
                       />
                     </Grid>
                     <Grid item xs={12}>
@@ -73,7 +79,6 @@ const Advices = () => {
                         label="კვირაში რამდენი დღე ისურვებდი ოფისიდან მუშაობას?*"
                         name="number_of_days_from_office"
                         array={numberOfDaysFromOffice}
-                        setFieldValue={setFieldValue}
                       />
                     </Grid>
                     <Grid item xs={12}>
@@ -81,8 +86,6 @@ const Advices = () => {
                         control="textarea"
                         label="რას ფიქრობ ფიზიკურ შეკრებებზე?"
                         name="what_about_meetings_in_live"
-                        setFieldValue={setFieldValue}
-                        value={values.what_about_meetings_in_live}
                       />
                     </Grid>
                     <Grid item xs={12}>
@@ -90,17 +93,20 @@ const Advices = () => {
                         control="textarea"
                         label="რას ფიქრობ არსებულ გარემოზე: რა მოგწონს, რას დაამატებდი, რას შეცვლიდი?"
                         name="tell_us_your_opinion_about_us"
-                        setFieldValue={setFieldValue}
-                        value={values.tell_us_your_opinion_about_us}
                       />
                     </Grid>
+                    <Grid
+                      item
+                      xs={12}
+                      display="flex"
+                      justifyContent="space-between"
+                      alignItems="center">
+                      <Link to="/vaccine">
+                        <PrevBtn />
+                      </Link>
+                      <NextBtn />
+                    </Grid>
                   </Grid>
-                  <Grid item display="flex" justifyContent="flex-end">
-                    <button type="submit" className={styles.finishBtn}>
-                      დასრულება
-                    </button>
-                  </Grid>
-                  <PrevBtn />
                 </Form>
               );
             }}

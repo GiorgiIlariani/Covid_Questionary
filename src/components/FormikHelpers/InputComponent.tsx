@@ -1,27 +1,46 @@
-import React from "react";
+import React, { useState, useEffect, ChangeEvent } from "react";
 import { useField, ErrorMessage } from "formik";
 import { TextField } from "@mui/material";
 import { FormikControlProps } from "../../interface/Index";
 
 const InputComponent = ({ name, placeholder, label }: FormikControlProps) => {
-  const [field, meta] = useField(name);
+  const [field, meta, helpers] = useField(name);
+
+  useEffect(() => {
+    const savedValue = sessionStorage.getItem(name);
+
+    if (savedValue) {
+      helpers.setValue(savedValue);
+    }
+  }, []);
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    helpers.setValue(value);
+    sessionStorage.setItem(name, value);
+  };
+
+  let hasError = meta.touched && meta.error !== undefined;
 
   const configTextField = {
-    ...field,
     fullWidth: true,
     placeholder,
     id: name,
     name,
+    error: hasError,
   };
-
-  let hasError = meta.touched && meta.error !== undefined;
 
   return (
     <React.Fragment>
       <label htmlFor={label} className={`${hasError ? "error-text" : null}`}>
         {label}
       </label>
-      <TextField {...configTextField} error={hasError} margin="normal" />
+      <TextField
+        {...configTextField}
+        {...field}
+        onChange={handleChange}
+        margin="normal"
+      />
       {hasError ? (
         <ErrorMessage name={name} component="p" className="error-text" />
       ) : null}

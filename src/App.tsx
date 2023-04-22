@@ -4,7 +4,7 @@ import React from "react";
 import { Routes, Route } from "react-router-dom";
 
 //pages
-import HomePage from "./pages/thanks/Home/Index";
+import HomePage from "./pages/Home/Index";
 import PersonalInfo from "./pages/personalInfo/Index";
 import CovidCondition from "./pages/covidCondition/Index";
 import Vaccine from "./pages/vaccine/Index";
