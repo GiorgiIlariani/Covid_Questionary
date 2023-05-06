@@ -9,6 +9,7 @@ export interface FormikControlProps {
   name: string;
   label?: string;
   placeholder?: string;
+  value?: any;
   array?: {
     value: string | boolean | number;
     label: string;
