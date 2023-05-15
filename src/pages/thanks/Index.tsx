@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 
 import axios from "axios";
 
@@ -24,16 +24,18 @@ const Thanks = () => {
       advicesValues
     );
 
-    axios
-      .post("https://covid19.devtest.ge/api/create", values)
-      .then((response) => {
-        console.log(response);
-        // handle the response from the server
-      })
-      .catch((error) => {
-        console.error(error);
-        // handle the error
-      });
+    // something bad happening with backend server
+
+    // axios
+    //   .post("https://covid19.devtest.ge/api/create", values)
+    //   .then((response) => {
+    //     console.log(response);
+    //     // handle the response from the server
+    //   })
+    //   .catch((error) => {
+    //     console.error(error);
+    //     // handle the error
+    //   });
   }, []);
   return (
     <div className={styles.thanks}>
